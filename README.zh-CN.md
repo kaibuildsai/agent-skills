@@ -20,6 +20,16 @@
 - 结合 OpenClaw 对同一篇页面内容做问答
 - 先提取再问答，绕过直接网页访问受限的场景
 
+### `openclaw-agent-onboarding`
+按固定流程配置 OpenClaw 多 Agent 路由，把飞书/WhatsApp 指定群聊绑定到专属 Agent。
+
+**适用场景**
+- 搭建“编程/投研/日常助理”分工团队，隔离记忆与角色
+- 在群聊中免手动 `/model` 切换
+- 通过暗号法从日志精准提取群 `peer.id`
+- 用 `jq` 安全修改 `~/.openclaw/openclaw.json`（含备份）
+- 重启并验证路由是否生效
+
 ## 快速开始
 
 ```bash
