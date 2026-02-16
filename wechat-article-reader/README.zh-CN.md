@@ -7,6 +7,8 @@
 - 抓取 `mp.weixin.qq.com` 文章页面
 - 提取标题、作者、正文
 - 将 HTML 转为 Markdown
+- 适合接入 OpenClaw 工作流，对页面内容进行问答
+- 在直接访问网页受限时可先提取正文，再基于 Markdown 提问
 
 ## 命令
 

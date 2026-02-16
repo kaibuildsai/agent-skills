@@ -17,6 +17,8 @@ Extract full text from WeChat Official Account articles (`mp.weixin.qq.com`) and
 - Save articles to your knowledge base
 - Summarize long posts with LLMs
 - Convert links into searchable text
+- Feed extracted text into OpenClaw for grounded Q&A on the same page
+- Bypass direct webpage access limits by extracting content first, then ask questions over Markdown
 
 ## Quick start
 

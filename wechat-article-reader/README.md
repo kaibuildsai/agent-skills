@@ -7,6 +7,8 @@ Extract WeChat Official Account articles to clean Markdown.
 - Fetches article pages from `mp.weixin.qq.com`
 - Extracts title, author, and main content
 - Converts HTML to Markdown
+- Works well with OpenClaw pipelines for page-level Q&A
+- Helps when direct page browsing is restricted: extract first, then query the Markdown
 
 ## CLI
 
