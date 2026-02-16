@@ -1,0 +1,23 @@
+{
+  "name": "wechat-article-reader",
+  "version": "1.0.0",
+  "description": "Extract and convert WeChat Official Account article pages to Markdown.",
+  "main": "scripts/read_article.mjs",
+  "scripts": {
+    "start": "node scripts/read_article.mjs read \"<wechat-article-url>\"",
+    "playwright-install": "playwright install chromium"
+  },
+  "type": "module",
+  "keywords": [
+    "wechat",
+    "crawler",
+    "playwright",
+    "markdown"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.42.1",
+    "turndown": "^7.2.0"
+  }
+}
