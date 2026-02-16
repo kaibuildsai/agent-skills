@@ -35,7 +35,6 @@ node scripts/read_article.mjs read "https://mp.weixin.qq.com/s/你的文章ID"
 
 ## 说明
 
-- 仓库不提交 `node_modules`
 - 部分页面可能触发反爬/限频
 
 ## 许可证

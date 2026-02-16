@@ -35,7 +35,6 @@ Markdown printed to stdout (title, author, body).
 
 ## Notes
 
-- `node_modules` is intentionally not tracked
 - Some pages may hit anti-crawler/rate limits
 
 ## License
