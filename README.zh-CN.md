@@ -21,13 +21,13 @@
 - 先提取再问答，绕过直接网页访问受限的场景
 
 ### `openclaw-agent-onboarding`
-按固定流程配置 OpenClaw 多 Agent 路由，把飞书/WhatsApp 指定群聊绑定到专属 Agent。
+一步步把 OpenClaw 从“单个助手”升级为“多助理团队”，让不同群自动由对应的专属 Agent 接待（适用于任何支持 `group` 的 channel，飞书/WhatsApp 只是示例）。
 
 **适用场景**
 - 搭建“编程/投研/日常助理”分工团队，隔离记忆与角色
 - 在群聊中免手动 `/model` 切换
-- 通过暗号法从日志精准提取群 `peer.id`
-- 用 `jq` 安全修改 `~/.openclaw/openclaw.json`（含备份）
+- 用“暗号 + 日志”方式精准定位目标群 `peer.id`
+- 自动化修改 `~/.openclaw/openclaw.json`（先备份，再更新）
 - 重启并验证路由是否生效
 
 ## 快速开始

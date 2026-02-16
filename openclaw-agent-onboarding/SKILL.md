@@ -1,6 +1,6 @@
 ---
 name: openclaw-agent-onboarding
-description: Configure OpenClaw multi-agent routing by creating a new agent and binding a specific Feishu or WhatsApp group to that agent. Use when user asks to set up role-isolated assistants, find group peer IDs from logs, update ~/.openclaw/openclaw.json bindings, enable channel options like requireMention, and verify routing after daemon restart.
+description: Onboard OpenClaw into a role-based multi-agent team by creating a new agent and binding a specific group to it. Use when user asks to route any channel group to a dedicated agent (Feishu/WhatsApp are examples), isolate memory by role, avoid manual model switching, extract peer IDs from logs, update ~/.openclaw/openclaw.json bindings, and verify routing after daemon restart.
 ---
 
 Follow this workflow to configure a new OpenClaw agent binding safely.
@@ -9,7 +9,7 @@ Follow this workflow to configure a new OpenClaw agent binding safely.
 - `agent_id` (lowercase id used by OpenClaw)
 - `agent_name` (display name, optional)
 - `model_provider/model` (for example `openai-codex/gpt-5.3-codex`, `minimax/MiniMax-M2.5`)
-- `channel` (`feishu` or `whatsapp`)
+- `channel` (any enabled channel that supports group routing, for example `feishu` or `whatsapp`)
 - whether to use isolated `workspace` and `agent-dir`
 
 2. Discover command syntax before generating create commands:

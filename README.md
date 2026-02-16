@@ -21,13 +21,13 @@ Extract full text from WeChat Official Account articles (`mp.weixin.qq.com`) and
 - Bypass direct webpage access limits by extracting content first, then ask questions over Markdown
 
 ### `openclaw-agent-onboarding`
-Create and bind OpenClaw multi-agent routes for Feishu/WhatsApp groups with a repeatable workflow.
+Upgrade OpenClaw from a single assistant into a role-based assistant team, so each group is automatically handled by the right agent (works for any channel that supports `group`; Feishu/WhatsApp are just common examples).
 
 **Use cases**
 - Set up role-isolated agents (coding, finance, personal assistant)
 - Avoid manual `/model` switching in group chats
-- Extract exact `peer.id` from logs with a passphrase-based method
-- Safely patch `~/.openclaw/openclaw.json` bindings with backup + `jq`
+- Locate target `peer.id` accurately with a passphrase + logs method
+- Update `~/.openclaw/openclaw.json` safely with backup-first automation
 - Validate and restart daemon to make routing effective
 
 ## Quick start
