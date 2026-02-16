@@ -1,25 +1,33 @@
 # wechat-article-reader（中文）
 
-读取微信公众号文章并输出 Markdown。
+把微信公众号文章提取为干净的 Markdown。
 
 ## 功能
 
-- 使用 Playwright 打开 `mp.weixin.qq.com` 文章页
+- 抓取 `mp.weixin.qq.com` 文章页面
 - 提取标题、作者、正文
-- 使用 Turndown 将 HTML 转为 Markdown
+- 将 HTML 转为 Markdown
 
-## 用法
+## 命令
 
 ```bash
 npm install
 node scripts/read_article.mjs read "https://mp.weixin.qq.com/s/你的文章ID"
 ```
 
-## 输出
+## 输出示例
 
-脚本会把 Markdown 直接打印到标准输出。
+```md
+# 文章标题
 
-## 常见问题
+**作者：** 作者名
 
-- 若出现反爬/访问频率限制，稍后重试。
-- 若选择器提取失败，可能是微信页面结构变化导致。
+...正文...
+```
+
+## 提示
+
+- 遇到反爬/限频可稍后重试
+- 提取失败可能是微信页面结构变更
+
+English: [`README.md`](./README.md)

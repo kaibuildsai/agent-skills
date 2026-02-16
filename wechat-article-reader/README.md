@@ -1,23 +1,21 @@
 # wechat-article-reader
 
-Extract a WeChat Official Account article and return clean Markdown output.
+Extract WeChat Official Account articles to clean Markdown.
 
-## What it does
+## Features
 
-- Opens an `mp.weixin.qq.com` article page using Playwright
-- Extracts title, author, and main body
-- Converts article HTML to Markdown via Turndown
+- Fetches article pages from `mp.weixin.qq.com`
+- Extracts title, author, and main content
+- Converts HTML to Markdown
 
-## Usage
+## CLI
 
 ```bash
 npm install
 node scripts/read_article.mjs read "https://mp.weixin.qq.com/s/your-article-id"
 ```
 
-## Output
-
-Prints Markdown to stdout, for example:
+## Example output
 
 ```md
 # Article Title
@@ -27,9 +25,9 @@ Prints Markdown to stdout, for example:
 ...article body...
 ```
 
-## Troubleshooting
+## Tips
 
-- If you see anti-crawler / rate-limit errors, wait and retry later.
-- If selector extraction fails, WeChat page structure may have changed.
+- Retry later if anti-crawler / rate-limit appears
+- If extraction fails, WeChat DOM may have changed
 
-中文说明见：`README.zh-CN.md`
+中文文档：[`README.zh-CN.md`](./README.zh-CN.md)

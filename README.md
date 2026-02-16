@@ -1,28 +1,43 @@
 # Agent Skills
 
-Open-source collection of practical skills for coding agents.
+Practical, open-source skills for coding agents.
 
-## Included Skills
+## Why this repo
 
-- `wechat-article-reader` — Extract full content from WeChat Official Account articles (`mp.weixin.qq.com`) and convert to Markdown.
+- **Useful over fancy**: real workflows you can run today
+- **Small and readable**: minimal setup, clear structure
+- **Open to reuse**: copy, modify, ship
 
-## Quick Start
+## Skills
+
+### `wechat-article-reader`
+Extract full text from WeChat Official Account articles (`mp.weixin.qq.com`) and output clean Markdown.
+
+**Use cases**
+- Save articles to your knowledge base
+- Summarize long posts with LLMs
+- Convert links into searchable text
+
+## Quick start
 
 ```bash
-cd wechat-article-reader
+git clone https://github.com/kaibuildsai/agent-skills.git
+cd agent-skills/wechat-article-reader
 npm install
 node scripts/read_article.mjs read "https://mp.weixin.qq.com/s/your-article-id"
 ```
 
+## Output
+
+Markdown printed to stdout (title, author, body).
+
 ## Notes
 
-- This repository stores skill source files (not runtime `node_modules`).
-- Some WeChat pages may trigger anti-crawler/rate-limit checks.
+- `node_modules` is intentionally not tracked
+- Some pages may hit anti-crawler/rate limits
 
 ## License
 
 MIT
 
----
-
-中文说明见：`README.zh-CN.md`
+中文文档：[`README.zh-CN.md`](./README.zh-CN.md)
