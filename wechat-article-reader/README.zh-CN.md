@@ -29,7 +29,6 @@ node scripts/read_article.mjs read "https://mp.weixin.qq.com/s/你的文章ID"
 
 ## 提示
 
-- 遇到反爬/限频可稍后重试
 - 提取失败可能是微信页面结构变更
 
 English: [`README.md`](./README.md)

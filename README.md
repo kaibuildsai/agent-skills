@@ -33,10 +33,6 @@ node scripts/read_article.mjs read "https://mp.weixin.qq.com/s/your-article-id"
 
 Markdown printed to stdout (title, author, body).
 
-## Notes
-
-- Some pages may hit anti-crawler/rate limits
-
 ## License
 
 MIT

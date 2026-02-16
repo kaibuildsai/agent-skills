@@ -29,7 +29,6 @@ node scripts/read_article.mjs read "https://mp.weixin.qq.com/s/your-article-id"
 
 ## Tips
 
-- Retry later if anti-crawler / rate-limit appears
 - If extraction fails, WeChat DOM may have changed
 
 中文文档：[`README.zh-CN.md`](./README.zh-CN.md)

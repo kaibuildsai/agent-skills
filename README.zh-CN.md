@@ -33,10 +33,6 @@ node scripts/read_article.mjs read "https://mp.weixin.qq.com/s/你的文章ID"
 
 标准输出 Markdown（标题、作者、正文）。
 
-## 说明
-
-- 部分页面可能触发反爬/限频
-
 ## 许可证
 
 MIT
