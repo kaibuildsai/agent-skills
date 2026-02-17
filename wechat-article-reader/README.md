@@ -14,10 +14,10 @@ Extract WeChat Official Account articles to clean Markdown.
 
 ```bash
 npm install
-node scripts/read_article.mjs read "https://mp.weixin.qq.com/s/your-article-id"
+npm start "https://mp.weixin.qq.com/s/your-article-id"
 ```
 
-## Example output
+## Output
 
 ```md
 # Article Title
@@ -29,6 +29,9 @@ node scripts/read_article.mjs read "https://mp.weixin.qq.com/s/your-article-id"
 
 ## Tips
 
-- If extraction fails, WeChat DOM may have changed
+- **Anti-crawler**: If you hit rate limits, wait a few minutes and retry
+- **DOM changes**: WeChat occasionally updates their page structure - extraction may fail
+- **What's not extracted**: Videos, comments, likes, and comments are not supported
+- **Proxy**: Edit `scripts/read_article.mjs` to add proxy settings if needed
 
 中文文档：[`README.zh-CN.md`](./README.zh-CN.md)

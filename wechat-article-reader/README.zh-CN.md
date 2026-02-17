@@ -14,10 +14,10 @@
 
 ```bash
 npm install
-node scripts/read_article.mjs read "https://mp.weixin.qq.com/s/你的文章ID"
+npm start "https://mp.weixin.qq.com/s/你的文章ID"
 ```
 
-## 输出示例
+## 输出
 
 ```md
 # 文章标题
@@ -29,6 +29,9 @@ node scripts/read_article.mjs read "https://mp.weixin.qq.com/s/你的文章ID"
 
 ## 提示
 
-- 提取失败可能是微信页面结构变更
+- **反爬虫**：遇到频率限制时，等几分钟重试
+- **DOM 变化**：微信偶尔会改页面结构，可能导致提取失败
+- **不支持的内容**：视频、评论、点赞无法提取
+- **代理**：修改 `scripts/read_article.mjs` 添加代理设置
 
 English: [`README.md`](./README.md)
