@@ -88,7 +88,7 @@ openclaw daemon restart
 - Runtime model verification:
   - Run a non-delivered agent turn and inspect returned provider/model.
 ```bash
-openclaw agent --agent <agent_id> --message "模型校验：仅回复OK" --json
+openclaw agent --agent <agent_id> --message "Model check: reply with OK only" --json
 ```
   - Confirm `agentMeta.provider/model` matches requested model (no unintended fallback).
 
