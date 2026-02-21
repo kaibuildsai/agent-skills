@@ -6,3 +6,4 @@ node_modules/
 walkie-openclaw-adapter/references/config.json
 walkie-openclaw-adapter/references/state.json
 walkie-openclaw-adapter/references/audit.log
+walkie-openclaw-adapter/references/audit.cursor

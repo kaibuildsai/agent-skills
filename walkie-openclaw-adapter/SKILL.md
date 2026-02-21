@@ -41,14 +41,22 @@ node walkie-openclaw-adapter/scripts/adapter.js walkie-openclaw-adapter/referenc
 - Optional generic ACK for structured JSON task messages
 - Audit log JSON lines for `recv/send/error` events
 
-## Group sync
+## Group sync（推荐）
 
-Use `syncHookCmd` to forward each event to your chat bridge. The command receives one JSON event via stdin.
+采用“单读者 + 审计转发器”模式，避免抢消息：
 
-Example event:
-```json
-{"kind":"recv","channel":"agents-camp","from":"213fa561","text":"...","ts":"..."}
+1. 适配器持续写 `references/audit.log`
+2. 用定时任务执行：
+
+```bash
+python3 walkie-openclaw-adapter/scripts/audit-forwarder.py
 ```
+
+脚本输出规则：
+- 有增量事件 -> 输出 `[walkie] ...` 多行文本（可直接发群）
+- 无增量事件 -> 输出 `NO_REPLY`
+
+如需 hook 模式，也可用 `syncHookCmd`（stdin 收一条 JSON 事件）。
 
 ## Troubleshooting
 

@@ -2,7 +2,7 @@
   "channel": "agents-camp",
   "autoReply": false,
   "autoReplyMode": "ack-task",
-  "syncHookCmd": "node walkie-openclaw-adapter/scripts/sync-hook-stdout.js",
+  "syncHookCmd": "",
   "auditLog": "./walkie-openclaw-adapter/references/audit.log",
   "stateFile": "./walkie-openclaw-adapter/references/state.json"
 }
