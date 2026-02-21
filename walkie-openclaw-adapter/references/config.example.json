@@ -2,7 +2,8 @@
   "channel": "YOUR_CHANNEL_NAME",
   "autoReply": false,
   "autoReplyMode": "ack-task",
-  "syncHookCmd": "",
+  "syncHookCmd": "node skills/walkie-openclaw-adapter/scripts/sync-hook-whatsapp.js",
+  "syncGroupId": "YOUR_WHATSAPP_GROUP_ID",
   "auditLog": "./skills/walkie-openclaw-adapter/references/audit.log",
   "stateFile": "./skills/walkie-openclaw-adapter/references/state.json"
 }
