@@ -1,3 +1,8 @@
 node_modules/
 .DS_Store
 *.log
+
+# walkie-openclaw-adapter runtime files (do not commit)
+walkie-openclaw-adapter/references/config.json
+walkie-openclaw-adapter/references/state.json
+walkie-openclaw-adapter/references/audit.log
