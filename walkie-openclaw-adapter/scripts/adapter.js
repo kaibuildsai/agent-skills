@@ -2,6 +2,7 @@
 const { spawn } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
+const http = require('node:http');
 
 const cfgPath = process.argv[2] || path.join(__dirname, '..', 'references', 'config.json');
 if (!fs.existsSync(cfgPath)) {
@@ -62,6 +63,7 @@ async function send(text, meta = {}) {
   const evt = { kind: 'send', channel: cfg.channel, text, ...meta };
   appendAudit(evt);
   await runSyncHook(evt);
+  return evt;
 }
 
 function buildAutoReply(text) {
@@ -80,6 +82,63 @@ function buildAutoReply(text) {
     }
   } catch {}
   return null;
+}
+
+// HTTP server for send API
+function startSendServer(port = 9876) {
+  const server = http.createServer(async (req, res) => {
+    // CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204);
+      res.end();
+      return;
+    }
+
+    if (req.method === 'POST' && req.url === '/send') {
+      let body = '';
+      req.on('data', chunk => body += chunk);
+      req.on('end', async () => {
+        try {
+          const { text, meta } = JSON.parse(body);
+          if (!text) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'missing text field' }));
+            return;
+          }
+          const evt = await send(text, meta || {});
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: true, event: evt }));
+        } catch (e) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+      return;
+    }
+
+    if (req.method === 'GET' && req.url === '/health') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ status: 'ok', mode: 'single-reader+send-server' }));
+      return;
+    }
+
+    res.writeHead(404);
+    res.end();
+  });
+
+  server.listen(port, () => {
+    console.log(`Send server listening on http://localhost:${port}`);
+    appendAudit({ kind: 'server', service: 'send-api', port });
+  });
+
+  server.on('error', (e) => {
+    console.error('Send server error:', e.message);
+    appendAudit({ kind: 'error', where: 'sendServer', error: e.message });
+  });
 }
 
 async function loop() {
@@ -110,6 +169,11 @@ async function loop() {
       await new Promise((r) => setTimeout(r, 1200));
     }
   }
+}
+
+// Start send server if configured
+if (cfg.sendPort) {
+  startSendServer(cfg.sendPort);
 }
 
 loop();
