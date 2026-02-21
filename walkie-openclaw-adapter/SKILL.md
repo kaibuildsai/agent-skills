@@ -3,51 +3,54 @@ name: walkie-openclaw-adapter
 description: Run a single-reader Walkie adapter that bridges Walkie channels with OpenClaw task orchestration and audit logs. Use when setting up near-real-time agent-to-agent collaboration, avoiding read-race bugs, or adding transparent group sync for Walkie traffic.
 ---
 
-# Walkie OpenClaw Adapter
+Run a production-friendly **single-reader** adapter for Walkie channels.
 
-Use this skill to run a production-friendly **single-reader** adapter for Walkie channels.
+## Setup
 
-## Do this first
-
-1. Install Walkie CLI (`walkie-sh`) and verify it works:
+1. Install Walkie CLI:
 
 ```bash
 npm install -g walkie-sh
 walkie --version
 ```
 
-2. Prepare channel credentials (channel + secret) and join/create once.
-3. Ensure no other process is reading the same channel (`walkie read ...`) to avoid message theft.
-4. Copy the config template and edit channel settings:
+2. Ensure no other process reads the same channel (`walkie read ...`).
+3. Prepare config:
 
 ```bash
-cp skills/walkie-openclaw-adapter/references/config.example.json skills/walkie-openclaw-adapter/references/config.json
+cp walkie-openclaw-adapter/references/config.example.json walkie-openclaw-adapter/references/config.json
 ```
 
-## Start adapter
+4. Edit config:
+- `channel`: walkie channel name
+- `autoReply`: default `false` (recommended)
+- `autoReplyMode`: `ack-task` for generic task ACK only
+- `syncHookCmd`: optional shell command for near-real-time group sync (receives event JSON via stdin)
+
+## Run
 
 ```bash
-node skills/walkie-openclaw-adapter/scripts/adapter.js skills/walkie-openclaw-adapter/references/config.json
+node walkie-openclaw-adapter/scripts/adapter.js walkie-openclaw-adapter/references/config.json
 ```
 
-## What the adapter guarantees
+## Behavior
 
 - Single-reader loop with `walkie read <channel> --wait`
-- Structured receive/send audit lines in `audit.log`
-- Basic auto-reply routing for demo intents (text + JSON task/result)
-- Local state persistence (`state.json`) for round tracking
+- No built-in business-specific logic (no hardcoded riddle/translation behavior)
+- Optional generic ACK for structured JSON task messages
+- Audit log JSON lines for `recv/send/error` events
 
-## How to extend for OpenClaw orchestration
+## Group sync
 
-In `scripts/adapter.js`, extend `decideReply()` with intent routing:
+Use `syncHookCmd` to forward each event to your chat bridge. The command receives one JSON event via stdin.
 
-1. Parse incoming task envelope (`type=task`, `intent`, `args`, `task_id`).
-2. For heavy tasks, dispatch to an OpenClaw sub-agent via `sessions_spawn` (or another orchestrator entrypoint).
-3. Return a structured `result` envelope to Walkie with the same `task_id`/`trace_id`.
-4. Keep high-risk actions gated (approval before external send/delete/publish).
+Example event:
+```json
+{"kind":"recv","channel":"agents-camp","from":"213fa561","text":"...","ts":"..."}
+```
 
 ## Troubleshooting
 
-- If peers are 0: verify remote node is online and same channel+secret.
-- If messages seem missing: stop all extra readers and keep this adapter as the only reader.
-- If adapter crashes: check `audit.log` for `kind:error` entries and restart.
+- Peer=0: check same channel/secret and remote online status.
+- Missing messages: enforce single-reader rule.
+- Crash/retry loop: inspect `audit.log` error lines.

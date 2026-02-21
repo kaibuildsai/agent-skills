@@ -12,27 +12,27 @@ const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
 
 const logPath = cfg.auditLog || path.join(__dirname, '..', 'references', 'audit.log');
 const statePath = cfg.stateFile || path.join(__dirname, '..', 'references', 'state.json');
-const state = fs.existsSync(statePath) ? JSON.parse(fs.readFileSync(statePath, 'utf8')) : { rounds: 0 };
+const state = fs.existsSync(statePath)
+  ? JSON.parse(fs.readFileSync(statePath, 'utf8'))
+  : { startedAt: new Date().toISOString() };
 
-function sh(cmd, args) {
+function saveState() {
+  fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
+}
+
+function sh(cmd, args, stdinText) {
   return new Promise((resolve, reject) => {
-    const p = spawn(cmd, args, { stdio: ['ignore', 'pipe', 'pipe'] });
+    const p = spawn(cmd, args, { stdio: ['pipe', 'pipe', 'pipe'] });
     let out = '';
     let err = '';
+
+    if (stdinText) p.stdin.write(stdinText);
+    p.stdin.end();
+
     p.stdout.on('data', (d) => (out += d.toString()));
     p.stderr.on('data', (d) => (err += d.toString()));
     p.on('close', (code) => (code === 0 ? resolve(out.trim()) : reject(new Error(err || out || `exit ${code}`))));
   });
-}
-
-function audit(evt) {
-  const line = JSON.stringify({ ts: new Date().toISOString(), ...evt });
-  fs.appendFileSync(logPath, line + '\n');
-  console.log('SYNC', line);
-}
-
-function saveState() {
-  fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
 }
 
 function parseWalkieLine(line) {
@@ -41,58 +41,73 @@ function parseWalkieLine(line) {
   return { at: m[1], from: m[2], text: m[3].trim() };
 }
 
-async function send(text) {
-  await sh('walkie', ['send', cfg.channel, text]);
-  audit({ kind: 'send', channel: cfg.channel, text });
+function appendAudit(evt) {
+  const line = JSON.stringify({ ts: new Date().toISOString(), ...evt });
+  fs.appendFileSync(logPath, line + '\n');
+  console.log('SYNC', line);
+  return line;
 }
 
-function decideReply(text) {
+async function runSyncHook(eventObj) {
+  if (!cfg.syncHookCmd) return;
+  try {
+    await sh('bash', ['-lc', cfg.syncHookCmd], JSON.stringify(eventObj));
+  } catch (e) {
+    appendAudit({ kind: 'error', where: 'syncHook', error: String(e.message || e) });
+  }
+}
+
+async function send(text, meta = {}) {
+  await sh('walkie', ['send', cfg.channel, text]);
+  const evt = { kind: 'send', channel: cfg.channel, text, ...meta };
+  appendAudit(evt);
+  await runSyncHook(evt);
+}
+
+function buildAutoReply(text) {
+  // 通用模式：仅处理结构化 task 包；不内置任何具体业务（例如猜谜、翻译等）
   try {
     const j = JSON.parse(text);
-    if (j.type === 'task' && j.intent === 'riddle_round') {
-      const answer = '球门';
-      return JSON.stringify({ v: 1, type: 'result', task_id: j.task_id, ok: true, output: { answer } });
+    if (j && j.type === 'task' && cfg.autoReplyMode === 'ack-task') {
+      return JSON.stringify({
+        v: 1,
+        type: 'result',
+        task_id: j.task_id || null,
+        ok: true,
+        status: 'accepted',
+        note: 'task received by adapter'
+      });
     }
-    if (j.type === 'task' && j.intent === 'ping') {
-      return JSON.stringify({ v: 1, type: 'result', task_id: j.task_id, ok: true, output: { pong: true } });
-    }
-    return null;
   } catch {}
-
-  const r = text.match(/R(\d+)/i);
-  if (r) {
-    const round = Number(r[1]);
-    state.rounds = Math.max(state.rounds, round);
-    saveState();
-
-    if (/越洗越脏/.test(text)) return `R${round} A: 水`;
-    if (/越冷越热/.test(text)) return `R${round} A: 火`;
-    if (/什么门永远关不上/.test(text)) return `R${round} A: 球门`;
-    return `R${round} A: 我先猜一个：影子？（不确定）`;
-  }
-
   return null;
 }
 
 async function loop() {
-  audit({ kind: 'start', channel: cfg.channel, mode: 'single-reader' });
+  appendAudit({ kind: 'start', channel: cfg.channel, mode: 'single-reader' });
   while (true) {
     try {
       const out = await sh('walkie', ['read', cfg.channel, '--wait']);
       const lines = out.split('\n').map((s) => s.trim()).filter(Boolean);
+
       for (const line of lines) {
         const msg = parseWalkieLine(line);
         if (!msg) continue;
-        audit({ kind: 'recv', channel: cfg.channel, ...msg });
 
-        const reply = decideReply(msg.text);
-        if (reply && cfg.autoReply) {
-          await send(reply);
+        const evt = { kind: 'recv', channel: cfg.channel, ...msg };
+        appendAudit(evt);
+        await runSyncHook(evt);
+
+        if (cfg.autoReply === true) {
+          const reply = buildAutoReply(msg.text);
+          if (reply) await send(reply, { reason: 'autoReply' });
         }
       }
+
+      state.lastReadAt = new Date().toISOString();
+      saveState();
     } catch (e) {
-      audit({ kind: 'error', error: String(e.message || e) });
-      await new Promise((r) => setTimeout(r, 1500));
+      appendAudit({ kind: 'error', where: 'loop', error: String(e.message || e) });
+      await new Promise((r) => setTimeout(r, 1200));
     }
   }
 }
