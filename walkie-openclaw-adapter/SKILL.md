@@ -1,65 +1,84 @@
 ---
 name: walkie-openclaw-adapter
-description: Run a single-reader Walkie adapter that bridges Walkie channels with OpenClaw task orchestration and audit logs. Use when setting up near-real-time agent-to-agent collaboration, avoiding read-race bugs, or adding transparent group sync for Walkie traffic.
+description: Run a single-reader Walkie adapter that bridges Walkie channels with OpenClaw orchestration and transparent audit-based group sync. Use for near-real-time agent collaboration, anti-race message handling, and observable autonomous execution.
 ---
 
-Run a production-friendly **single-reader** adapter for Walkie channels.
+Run Walkie + OpenClaw in **托管模式（v2）**: stable, observable, and low-noise.
+
+## Core rules (must follow)
+
+1. **Single reader**: only one process may run `walkie read <channel> --wait`.
+2. **Single sender path**: all outbound messages must go through adapter path (no manual direct send in production mode).
+3. **Audit is source of truth**: group sync reads audit stream (`recv/send/error`) with cursor dedupe.
+4. **Structured protocol first**: prefer JSON task/result envelopes over free text.
 
 ## Setup
-
-1. Install Walkie CLI:
 
 ```bash
 npm install -g walkie-sh
 walkie --version
-```
-
-2. Ensure no other process reads the same channel (`walkie read ...`).
-3. Prepare config:
-
-```bash
 cp walkie-openclaw-adapter/references/config.example.json walkie-openclaw-adapter/references/config.json
 ```
 
-4. Edit config:
-- `channel`: walkie channel name
-- `autoReply`: default `false` (recommended)
-- `autoReplyMode`: `ack-task` for generic task ACK only
-- `syncHookCmd`: optional shell command for near-real-time group sync (receives event JSON via stdin)
-  - quick start: `node walkie-openclaw-adapter/scripts/sync-hook-stdout.js`
+Edit `config.json`:
+- `channel`
+- `autoReply` (recommend `false`)
+- `autoReplyMode` (`ack-task` if needed)
+- `syncHookCmd` (optional)
 
-## Run
+## Run (dev)
 
 ```bash
 node walkie-openclaw-adapter/scripts/adapter.js walkie-openclaw-adapter/references/config.json
 ```
 
-## Behavior
+## Run (recommended prod)
 
-- Single-reader loop with `walkie read <channel> --wait`
-- No built-in business-specific logic (no hardcoded riddle/translation behavior)
-- Optional generic ACK for structured JSON task messages
-- Audit log JSON lines for `recv/send/error` events
+- Linux: use `systemd` to supervise adapter
+- macOS: use `launchd` to supervise adapter
+- Keep `cron/timer` for `audit-forwarder.py` only (sync/announce), not as primary process supervision
 
-## Group sync（推荐）
+## Group sync format (fixed)
 
-采用“单读者 + 审计转发器”模式，避免抢消息：
+Use concise 3-line updates:
+- `[walkie][task_id] 收到: ...`
+- `[walkie][task_id] 动作: ...`
+- `[walkie][task_id] 结果: OK/ERR/WAIT ...`
 
-1. 适配器持续写 `references/audit.log`
-2. 用定时任务执行：
+## Protocol (minimum fields)
 
-```bash
-python3 walkie-openclaw-adapter/scripts/audit-forwarder.py
+```json
+{"type":"task","task_id":"t-001","intent":"summarize_links","args":{},"trace_id":"tr-001","ts":"..."}
 ```
 
-脚本输出规则：
-- 有增量事件 -> 输出 `[walkie] ...` 多行文本（可直接发群）
-- 无增量事件 -> 输出 `NO_REPLY`
+```json
+{"type":"result","task_id":"t-001","ok":true,"output":{},"trace_id":"tr-001","ts":"..."}
+```
 
-如需 hook 模式，也可用 `syncHookCmd`（stdin 收一条 JSON 事件）。
+## Decision policy
+
+- **L1/L2 auto-execute**: routine chat, retrieval, summarize, translation, progress updates.
+- **L3 human approval**: irreversible/delete/publish/payment/sensitive data externalization.
+
+## Anti-loop safety
+
+- event dedupe key
+- task TTL/max rounds
+- ignore self-origin loops
+- legal state transitions only
+- cooldown/rate limit
+- circuit breaker after repeated failures
+
+## Privacy and repo hygiene
+
+Never commit runtime files:
+- `references/config.json`
+- `references/state.json`
+- `references/audit.log`
+- `references/audit.cursor`
 
 ## Troubleshooting
 
-- Peer=0: check same channel/secret and remote online status.
-- Missing messages: enforce single-reader rule.
-- Crash/retry loop: inspect `audit.log` error lines.
+- Missing messages -> check for extra readers first.
+- Sync delay -> check forwarder schedule and cursor state.
+- Adapter exits -> check supervisor logs (systemd/launchd) + audit error lines.
