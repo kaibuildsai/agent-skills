@@ -20,6 +20,14 @@ walkie --version
 cp walkie-openclaw-adapter/references/config.example.json walkie-openclaw-adapter/references/config.json
 ```
 
+### Init confirmation (required)
+
+Before first run, explicitly confirm with user:
+1. Which Walkie channel to use (`channel`)
+2. Which chat/group should receive callback sync (platform + chat id)
+
+Do not assume callback destination. Bind it only after user confirms.
+
 Edit `config.json`:
 - `channel`
 - `autoReply` (recommend `false`)
