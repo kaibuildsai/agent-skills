@@ -5,7 +5,7 @@
  * Usage: Configure in config.json:
  * {
  *   "syncHookCmd": "node /path/to/sync-hook-whatsapp.js",
- *   "syncGroupId": "120363425617641888@g.us"
+ *   "syncGroupId": "YOUR_WHATSAPP_GROUP_ID"
  * }
  * 
  * Reads event from stdin, formats, and sends to configured WhatsApp group.
