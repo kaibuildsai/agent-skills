@@ -4,13 +4,14 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/lighthouse/.openclaw/workspace-codex
-ExecStart=/home/lighthouse/.nvm/versions/node/v22.22.0/bin/node /home/lighthouse/.openclaw/workspace-codex/skills/walkie-openclaw-adapter/scripts/adapter.js /home/lighthouse/.openclaw/workspace-codex/skills/walkie-openclaw-adapter/references/config.json
+# TODO: Adjust paths below for your environment
+WorkingDirectory=YOUR_WORKSPACE_PATH
+ExecStart=/path/to/node skills/walkie-openclaw-adapter/scripts/adapter.js skills/walkie-openclaw-adapter/references/config.json
 Restart=always
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
-Environment="PATH=/home/lighthouse/.nvm/versions/node/v22.22.0/bin:/home/lighthouse/.local/bin:/usr/local/bin:/usr/bin:/bin"
+# Example: Environment="PATH=/home/user/.nvm/versions/node/v22.22.0/bin:$PATH"
 Environment=NODE_ENV=production
 
 [Install]

@@ -71,8 +71,13 @@ node skills/walkie-openclaw-adapter/scripts/adapter.js skills/walkie-openclaw-ad
 ### Install systemd service (Linux)
 
 ```bash
-# Copy service file
+# Copy and edit service file
 cp skills/walkie-openclaw-adapter/references/walkie-adapter.service ~/.config/systemd/user/
+
+# Edit and adjust paths:
+# - WorkingDirectory: your workspace path
+# - ExecStart: path to node + adapter.js path
+# - Environment: PATH to your node (e.g., ~/.nvm/versions/node/v22.22.0/bin)
 
 # Enable and start
 systemctl --user daemon-reload
