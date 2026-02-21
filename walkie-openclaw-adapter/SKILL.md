@@ -17,7 +17,7 @@ Run Walkie + OpenClaw in **托管模式（v2）**: stable, observable, and low-n
 ```bash
 npm install -g walkie-sh
 walkie --version
-cp walkie-openclaw-adapter/references/config.example.json walkie-openclaw-adapter/references/config.json
+cp skills/walkie-openclaw-adapter/references/config.example.json skills/walkie-openclaw-adapter/references/config.json
 ```
 
 ### Init confirmation (required)
@@ -34,10 +34,32 @@ Edit `config.json`:
 - `autoReplyMode` (`ack-task` if needed)
 - `syncHookCmd` (optional)
 
+### Self-check (required after install)
+
+After editing `config.json`, run the self-check script to verify all requirements:
+
+```bash
+node skills/walkie-openclaw-adapter/scripts/self-check.js
+```
+
+**Acceptance criteria:**
+- Exit 0: All checks passed ✅ → Ready for production
+- Exit 1: Warnings only ⚠️ → OK to proceed, but review warnings
+- Exit 2: Critical failures ❌ → **Must fix before production**
+
+**Critical checks:**
+1. Config valid + channel set
+2. Audit log writable
+3. Single reader enforcement (no duplicate processes)
+4. System service supervision (systemd/launchd) configured
+5. Walkie CLI available
+
+If any critical check fails, do not run adapter in production mode. Fix issues first or inform user of risks.
+
 ## Run (dev)
 
 ```bash
-node walkie-openclaw-adapter/scripts/adapter.js walkie-openclaw-adapter/references/config.json
+node skills/walkie-openclaw-adapter/scripts/adapter.js skills/walkie-openclaw-adapter/references/config.json
 ```
 
 ## Run (recommended prod)
@@ -45,6 +67,26 @@ node walkie-openclaw-adapter/scripts/adapter.js walkie-openclaw-adapter/referenc
 - Linux: use `systemd` to supervise adapter
 - macOS: use `launchd` to supervise adapter
 - Keep `cron/timer` for `audit-forwarder.py` only (sync/announce), not as primary process supervision
+
+### Install systemd service (Linux)
+
+```bash
+# Copy service file
+cp skills/walkie-openclaw-adapter/references/walkie-adapter.service ~/.config/systemd/user/
+
+# Enable and start
+systemctl --user daemon-reload
+systemctl --user enable walkie-adapter
+systemctl --user start walkie-adapter
+
+# Check status
+systemctl --user status walkie-adapter
+```
+
+**Why systemd matters:**
+- Auto-restart on crash (your previous issue)
+- Survives reboot
+- Proper logging via journalctl
 
 ## Group sync format (fixed)
 
