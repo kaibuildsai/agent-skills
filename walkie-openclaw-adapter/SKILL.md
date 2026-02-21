@@ -26,6 +26,7 @@ cp walkie-openclaw-adapter/references/config.example.json walkie-openclaw-adapte
 - `autoReply`: default `false` (recommended)
 - `autoReplyMode`: `ack-task` for generic task ACK only
 - `syncHookCmd`: optional shell command for near-real-time group sync (receives event JSON via stdin)
+  - quick start: `node walkie-openclaw-adapter/scripts/sync-hook-stdout.js`
 
 ## Run
 
