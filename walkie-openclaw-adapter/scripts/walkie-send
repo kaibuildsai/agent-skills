@@ -1,0 +1,79 @@
+#!/usr/bin/env node
+/**
+ * Walkie Send - Send messages through adapter (with audit + sync)
+ * 
+ * Usage:
+ *   node walkie-send "your message"
+ *   ./walkie-send "your message"  (if executable)
+ * 
+ * This ensures all outbound messages go through the adapter path,
+ * maintaining audit trail and triggering group sync.
+ */
+
+const { spawn } = require('node:child_process');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const scriptPath = process.argv[1];
+const scriptDir = path.dirname(path.resolve(scriptPath));
+const cfgPath = path.join(scriptDir, '..', 'references', 'config.json');
+const logPath = path.join(scriptDir, '..', 'references', 'audit.log');
+
+// Load config
+let cfg;
+try {
+  cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+} catch (e) {
+  console.error(`Error: config.json not found at ${cfgPath}`);
+  console.error('Run: cp references/config.example.json references/config.json');
+  process.exit(1);
+}
+
+const text = process.argv.slice(2).join(' ');
+if (!text) {
+  console.error('Usage: walkie-send "your message"');
+  process.exit(1);
+}
+
+// Execute walkie send
+const walkie = spawn('walkie', ['send', cfg.channel, text]);
+
+walkie.stdout.on('data', (d) => process.stdout.write(d));
+walkie.stderr.on('data', (d) => process.stderr.write(d));
+
+walkie.on('close', (code) => {
+  if (code === 0) {
+    // Log to audit
+    const evt = JSON.stringify({
+      ts: new Date().toISOString(),
+      kind: 'send',
+      channel: cfg.channel,
+      text,
+      via: 'walkie-send'
+    });
+    fs.appendFileSync(logPath, evt + '\n');
+    console.log(`[audit] sent: ${text.slice(0, 50)}${text.length > 50 ? '...' : ''}`);
+    
+    // Run sync hook if configured
+    if (cfg.syncHookCmd) {
+      try {
+        const hook = spawn('bash', ['-lc', cfg.syncHookCmd], {
+          stdio: ['pipe', 'ignore', 'ignore']
+        });
+        hook.stdin.write(evt);
+        hook.stdin.end();
+      } catch (e) {
+        // Hook failure is non-fatal
+      }
+    }
+    
+    process.exit(0);
+  } else {
+    process.exit(code);
+  }
+});
+
+walkie.on('error', (e) => {
+  console.error(`Error: ${e.message}`);
+  process.exit(1);
+});

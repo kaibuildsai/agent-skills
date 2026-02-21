@@ -3,6 +3,6 @@
   "autoReply": false,
   "autoReplyMode": "ack-task",
   "syncHookCmd": "",
-  "auditLog": "./walkie-openclaw-adapter/references/audit.log",
-  "stateFile": "./walkie-openclaw-adapter/references/state.json"
+  "auditLog": "./skills/walkie-openclaw-adapter/references/audit.log",
+  "stateFile": "./skills/walkie-openclaw-adapter/references/state.json"
 }
