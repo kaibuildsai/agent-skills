@@ -1,0 +1,13 @@
+# Runtime files
+references/config.json
+references/state.json
+references/audit.log
+references/audit.cursor
+references/walkie-adapter.service
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
