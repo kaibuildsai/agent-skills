@@ -30,9 +30,11 @@ Do not assume callback destination. Bind it only after user confirms.
 
 Edit `config.json`:
 - `channel`
-- `autoReply` (recommend `false`)
+- `autoReply` / `autoExecute`
 - `autoReplyMode` (`ack-task` if needed)
-- `syncHookCmd` (optional)
+- `policy.levels` (L1/L2/L3)
+- `policy.stopConditions` (maxRounds / maxTaskMinutes / maxConsecutiveErrors)
+- `syncHookCmd` + `syncGroupId`
 
 ### Self-check (required after install)
 

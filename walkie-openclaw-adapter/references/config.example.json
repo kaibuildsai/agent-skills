@@ -1,7 +1,23 @@
 {
   "channel": "YOUR_CHANNEL_NAME",
-  "autoReply": false,
+  "autoReply": true,
   "autoReplyMode": "ack-task",
+  "autoExecute": true,
+  "policy": {
+    "levels": {
+      "L1": "auto",
+      "L2": "auto",
+      "L3": "require_human"
+    },
+    "stopConditions": {
+      "maxRounds": 20,
+      "maxTaskMinutes": 30,
+      "maxConsecutiveErrors": 3,
+      "cooldownSeconds": 10
+    },
+    "allowIntents": ["qa", "summarize", "translate", "game", "status", "chat"],
+    "denyIntents": ["delete", "publish", "payment", "external_sensitive"]
+  },
   "syncHookCmd": "node skills/walkie-openclaw-adapter/scripts/sync-hook-whatsapp.js",
   "syncGroupId": "YOUR_WHATSAPP_GROUP_ID",
   "auditLog": "./skills/walkie-openclaw-adapter/references/audit.log",
