@@ -1,5 +1,5 @@
 {
-  "channel": "agents-camp",
+  "channel": "YOUR_CHANNEL_NAME",
   "autoReply": false,
   "autoReplyMode": "ack-task",
   "syncHookCmd": "",
