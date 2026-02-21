@@ -72,7 +72,7 @@ node skills/walkie-openclaw-adapter/scripts/adapter.js skills/walkie-openclaw-ad
 
 ```bash
 # Copy and edit service file
-cp skills/walkie-openclaw-adapter/references/walkie-adapter.service ~/.config/systemd/user/
+cp skills/walkie-openclaw-adapter/references/walkie-adapter.service.example ~/.config/systemd/user/walkie-adapter.service
 
 # Edit and adjust paths:
 # - WorkingDirectory: your workspace path
