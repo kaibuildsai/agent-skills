@@ -20,6 +20,11 @@
 
 **适用场景**：角色隔离、免手动 `/model` 切换、群专属路由。
 
+### [walkie-openclaw-adapter](./walkie-openclaw-adapter/)
+单读者 Walkie 适配器，把 Walkie 频道流量桥接到 OpenClaw 编排，并保留审计日志。
+
+**适用场景**：近实时 agent 协作、避免 read 抢消息、后台协作透明同步。
+
 ## 许可证
 
 MIT

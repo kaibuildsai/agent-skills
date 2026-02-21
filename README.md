@@ -20,6 +20,11 @@ Turn OpenClaw into a role-based multi-agent team. Each group auto-routes to the 
 
 **Use cases**: Role-isolated agents, avoid manual `/model` switching, group-specific routing.
 
+### [walkie-openclaw-adapter](./walkie-openclaw-adapter/)
+Single-reader Walkie adapter that bridges Walkie channel traffic into OpenClaw orchestration with audit logs.
+
+**Use cases**: Near-real-time agent-to-agent collaboration, avoid read-race bugs, transparent sync of backend chatter.
+
 ## License
 
 MIT

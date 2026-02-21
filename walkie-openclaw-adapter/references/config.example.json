@@ -1,0 +1,6 @@
+{
+  "channel": "agents-camp",
+  "autoReply": true,
+  "auditLog": "./skills/walkie-openclaw-adapter/references/audit.log",
+  "stateFile": "./skills/walkie-openclaw-adapter/references/state.json"
+}
