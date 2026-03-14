@@ -25,6 +25,11 @@
 
 **适用场景**：近实时 agent 协作、避免 read 抢消息、后台协作透明同步。
 
+### [notebooklm-slides-from-link](./notebooklm-slides-from-link/)
+给一个链接新建 NotebookLM notebook，然后生成长版幻灯片。YouTube 是重要场景，但其他网页链接也可以。
+
+**适用场景**：把 YouTube 视频整理成详细 PPT、把网页内容生成分享用 deck、按“一条链接一个 notebook”沉淀资料。
+
 ## 许可证
 
 MIT

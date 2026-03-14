@@ -25,6 +25,11 @@ Single-reader Walkie adapter that bridges Walkie channel traffic into OpenClaw o
 
 **Use cases**: Near-real-time agent-to-agent collaboration, avoid read-race bugs, transparent sync of backend chatter.
 
+### [notebooklm-slides-from-link](./notebooklm-slides-from-link/)
+Create a fresh NotebookLM notebook from one link, then generate a long slide deck. YouTube is a primary use case, but other webpage links can work too.
+
+**Use cases**: Turn a YouTube video into a detailed PPT, build a shareable deck from a webpage, create one notebook per source link for later review.
+
 ## License
 
 MIT

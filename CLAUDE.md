@@ -32,6 +32,26 @@ Documentation skill for onboarding OpenClaw into a role-based multi-agent team. 
 - Safely updating `~/.openclaw/openclaw.json` bindings with `jq` patches
 - Validating routing and model configuration after daemon restart
 
+### `notebooklm-slides-from-link`
+Create a fresh NotebookLM notebook from one link and generate a slide deck, with YouTube as a primary use case.
+
+**Setup:**
+```bash
+uvx --from notebooklm-mcp-cli nlm login
+```
+
+**Run:**
+```bash
+bash notebooklm-slides-from-link/scripts/create_slides_from_link.sh \
+  --url "<url>" \
+  --prompt "<prompt>"
+```
+
+Defaults:
+- Creates a new notebook per link
+- Defaults to `long` slide length
+- Polls until the slide artifact is ready
+
 ## Code Structure
 
 ```
@@ -40,6 +60,9 @@ Documentation skill for onboarding OpenClaw into a role-based multi-agent team. 
 │   ├── scripts/read_article.mjs   # Main entry point
 │   ├── package.json
 │   └── SKILL.md                  # Skill metadata
+├── notebooklm-slides-from-link/
+│   ├── scripts/create_slides_from_link.sh
+│   └── SKILL.md
 ├── openclaw-agent-onboarding/
 │   └── SKILL.md                  # Full workflow documentation
 └── openclaw-agent-binding/       # Empty placeholder
